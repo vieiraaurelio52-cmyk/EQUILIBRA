@@ -1,0 +1,1060 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123c32">
+<title>EQUILIBRA | Gastar com disciplina</title>
+
+<style>
+:root {
+  --green:#174d3d;
+  --green2:#246b50;
+  --light:#eaf4ee;
+  --bg:#f3f6f3;
+  --text:#24352c;
+  --muted:#718078;
+  --white:#fff;
+  --border:#dce6df;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:105px;
+}
+header {
+  background:var(--green);
+  color:white;
+  padding:22px 18px;
+  text-align:center;
+}
+header h1 {
+  margin:0;
+  letter-spacing:2px;
+}
+header p {
+  margin:6px 0 0;
+  font-size:13px;
+  opacity:.9;
+}
+nav {
+  display:flex;
+  overflow-x:auto;
+  background:white;
+  padding:9px 5px;
+  gap:5px;
+  position:sticky;
+  top:0;
+  z-index:10;
+  box-shadow:0 2px 7px #0000000c;
+}
+nav button {
+  flex:1;
+  min-width:65px;
+  border:0;
+  background:transparent;
+  padding:11px 7px;
+  border-radius:9px;
+  color:var(--muted);
+  font-size:12px;
+}
+nav button.active {
+  background:var(--light);
+  color:var(--green);
+  font-weight:bold;
+}
+main {
+  max-width:650px;
+  margin:auto;
+  padding:15px;
+}
+.section {display:none}
+.section.active {display:block}
+h2 {font-size:21px}
+h3 {font-size:17px}
+.card {
+  background:white;
+  padding:17px;
+  border-radius:15px;
+  margin:13px 0;
+  box-shadow:0 2px 9px #00000008;
+}
+.balance-card {
+  background:var(--green);
+  color:white;
+}
+.balance {
+  font-size:30px;
+  font-weight:bold;
+  margin:12px 0;
+}
+.muted {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+label {
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin:15px 0 6px;
+}
+input,select,textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  background:white;
+  font-size:15px;
+  color:var(--text);
+}
+button {
+  cursor:pointer;
+}
+.primary,.secondary {
+  width:100%;
+  border:0;
+  padding:13px;
+  border-radius:9px;
+  margin-top:12px;
+  font-weight:bold;
+  font-size:14px;
+}
+.primary {
+  background:var(--green);
+  color:white;
+}
+.secondary {
+  background:var(--light);
+  color:var(--green);
+}
+.danger {
+  background:#fff0ed;
+  color:#b43d30;
+}
+.grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.stat {
+  background:white;
+  padding:14px;
+  border-radius:12px;
+}
+.stat strong {
+  display:block;
+  font-size:18px;
+  margin-top:7px;
+}
+.motivation {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#e5f1e9;
+  color:var(--green);
+  text-align:center;
+  padding:13px 16px;
+  font-size:12px;
+  line-height:1.5;
+  z-index:20;
+  border-top:1px solid var(--border);
+}
+.message {
+  background:#eaf4ee;
+  border-left:4px solid var(--green2);
+  padding:13px;
+  border-radius:8px;
+  margin:12px 0;
+  line-height:1.5;
+}
+.tag {
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:bold;
+}
+.green {background:#e1f5e7;color:#247340}
+.yellow {background:#fff3ce;color:#8b6811}
+.red {background:#ffe6e3;color:#a83228}
+.blue {background:#e3efff;color:#285c9c}
+.item {
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.item:last-child {border:0}
+.small {font-size:12px;color:var(--muted)}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>EQUILIBRA</h1>
+  <p>Gastar com disciplina.</p>
+</header>
+
+<nav>
+  <button class="active" type="button" onclick="showSection('inicio',this)">Início</button>
+  <button type="button" onclick="showSection('registos',this)">Registos</button>
+  <button type="button" onclick="showSection('avaliar',this)">Avaliar</button>
+  <button type="button" onclick="showSection('objetivos',this)">Objetivos</button>
+  <button type="button" onclick="showSection('perfil',this)">Perfil</button>
+</nav>
+
+<main>
+
+<section id="inicio" class="section active">
+  <h2>O teu dinheiro</h2>
+
+  <div class="card balance-card">
+    <small>Saldo atual calculado</small>
+    <div class="balance" id="currentBalance">0 Kz</div>
+    <small>Disponibilidade após compromissos e reservas</small>
+    <h2 id="availableBalance">0 Kz</h2>
+  </div>
+
+  <div class="grid">
+    <div class="stat">
+      <small>Entradas recebidas</small>
+      <strong id="incomeTotal">0 Kz</strong>
+    </div>
+    <div class="stat">
+      <small>Despesas realizadas</small>
+      <strong id="expenseTotal">0 Kz</strong>
+    </div>
+    <div class="stat">
+      <small>Compromissos pendentes</small>
+      <strong id="pendingTotal">0 Kz</strong>
+    </div>
+    <div class="stat">
+      <small>Reservado para objetivos</small>
+      <strong id="reservedTotal">0 Kz</strong>
+    </div>
+  </div>
+
+  <div id="salaryMessage"></div>
+
+  <div class="card">
+    <h3>Resumo financeiro</h3>
+    <p class="muted" id="welcomeMessage">
+      Organiza o teu dinheiro e toma decisões conscientes.
+    </p>
+    <button class="secondary" type="button"
+      onclick="showSection('avaliar',document.querySelectorAll('nav button')[2])">
+      Avaliar uma despesa
+    </button>
+  </div>
+
+  <div class="card">
+    <h3>Próximos compromissos</h3>
+    <div id="upcomingList">
+      <p class="muted">Ainda não existem compromissos registados.</p>
+    </div>
+  </div>
+</section>
+
+<section id="registos" class="section">
+  <h2>Os meus registos</h2>
+
+  <div class="card">
+    <form id="setupForm">
+      <label>Tipo de movimento</label>
+      <select id="movementType">
+        <option value="income">Rendimento</option>
+        <option value="expense">Despesa</option>
+      </select>
+
+      <label>Descrição</label>
+      <input id="movementDescription" placeholder="Ex.: Salário, alimentação..." required>
+
+      <label>Valor em Kz</label>
+      <input id="movementAmount" type="number" min="1" step="0.01" required>
+
+      <label>Estado do movimento</label>
+      <select id="movementStatus">
+        <option value="planned">Previsto</option>
+        <option value="confirmed">Já recebido/realizado</option>
+        <option value="partial">Parcialmente recebido/pago</option>
+      </select>
+
+      <div id="partialArea" style="display:none">
+        <label>Valor já recebido ou pago</label>
+        <input id="partialAmount" type="number" min="0" step="0.01">
+      </div>
+
+      <label>Data</label>
+      <input id="movementDate" type="date">
+
+      <button class="primary" type="submit">Guardar registo</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Histórico financeiro</h3>
+    <div id="historyList">
+      <p class="muted">Os teus registos aparecerão aqui.</p>
+    </div>
+  </div>
+</section>
+
+<section id="avaliar" class="section">
+  <h2>Avaliar uma despesa</h2>
+
+  <div class="card">
+    <form id="evaluationForm">
+      <label>O que pretendes comprar ou pagar?</label>
+      <input id="purchaseName" placeholder="Ex.: Um par de ténis" required>
+
+      <label>Quanto custa?</label>
+      <input id="purchaseAmount" type="number" min="1" required>
+
+      <label>Qual é a natureza da despesa?</label>
+      <select id="purchaseNature">
+        <option value="necessidade">Necessidade</option>
+        <option value="conveniencia">Conveniência</option>
+        <option value="vontade">Vontade pessoal</option>
+        <option value="emergencia">Emergência</option>
+        <option value="estrategica">Estratégica</option>
+      </select>
+
+      <label>Qual é a urgência?</label>
+      <select id="purchaseUrgency">
+        <option value="baixa">Pode esperar</option>
+        <option value="media">É importante em breve</option>
+        <option value="alta">É urgente</option>
+      </select>
+
+      <label>Já garantiste as necessidades dos próximos dias?</label>
+      <select id="needsCovered">
+        <option value="yes">Sim</option>
+        <option value="no">Não</option>
+        <option value="unknown">Não tenho a certeza</option>
+      </select>
+
+      <label>Queres acrescentar algum contexto?</label>
+      <textarea id="purchaseContext" rows="3"
+        placeholder="Explica a tua situação, se quiseres..."></textarea>
+
+      <button class="primary" type="submit">Avaliar despesa</button>
+    </form>
+  </div>
+
+  <div id="evaluationResult"></div>
+</section>
+
+<section id="objetivos" class="section">
+  <h2>Os meus objetivos</h2>
+
+  <div class="card">
+    <form id="goalForm">
+      <label>Nome do objetivo</label>
+      <input id="goalName" placeholder="Ex.: Comprar uma motorizada" required>
+
+      <label>Valor necessário (Kz)</label>
+      <input id="goalTarget" type="number" min="1" required>
+
+      <label>Valor já reservado (Kz)</label>
+      <input id="goalSaved" type="number" min="0" value="0">
+
+      <label>Prazo pretendido</label>
+      <input id="goalDeadline" type="date">
+
+      <label>Prioridade</label>
+      <select id="goalPriority">
+        <option value="alta">Alta</option>
+        <option value="media">Média</option>
+        <option value="baixa">Baixa</option>
+      </select>
+
+      <button class="primary" type="submit">Adicionar objetivo</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Os teus objetivos ativos</h3>
+    <div id="goalsList">
+      <p class="muted">Ainda não adicionaste objetivos.</p>
+    </div>
+  </div>
+</section>
+
+<section id="perfil" class="section">
+  <h2>O meu perfil</h2>
+
+  <div class="card">
+    <form id="profileForm">
+      <label>Como te chamas?</label>
+      <input id="userName" placeholder="O teu nome" required>
+
+      <label>Moeda utilizada</label>
+      <select id="currency">
+        <option value="Kz">Kwanza (Kz)</option>
+        <option value="€">Euro (€)</option>
+        <option value="$">Dólar ($)</option>
+        <option value="R$">Real (R$)</option>
+      </select>
+
+      <label>Saldo que já tinhas antes de começar a usar o EQUILIBRA</label>
+      <input id="openingBalance" type="number" min="0" placeholder="Ex.: 10000">
+
+      <p class="muted">
+        Não incluas aqui rendimentos que já vais registar na aplicação.
+      </p>
+
+      <label>Principal fonte de rendimento</label>
+      <select id="incomeSource">
+        <option value="Salário">Salário</option>
+        <option value="Trabalho por conta própria">Trabalho por conta própria</option>
+        <option value="Negócio">Negócio</option>
+        <option value="Ajuda familiar">Ajuda familiar</option>
+        <option value="Várias fontes">Várias fontes</option>
+        <option value="Outra">Outra</option>
+      </select>
+
+      <label>Com que frequência recebes dinheiro?</label>
+      <select id="frequency">
+        <option value="Mensalmente">Mensalmente</option>
+        <option value="Semanalmente">Semanalmente</option>
+        <option value="Diariamente">Diariamente</option>
+        <option value="Irregularmente">Irregularmente</option>
+        <option value="Sazonalmente">Sazonalmente</option>
+      </select>
+
+      <button class="primary" type="submit">Guardar perfil</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Sobre o EQUILIBRA</h3>
+    <p class="muted">
+      O EQUILIBRA ajuda-te a compreender a tua situação financeira,
+      avaliar despesas e trabalhar para alcançar objetivos.
+    </p>
+    <p><strong>Gastar com disciplina.</strong></p>
+    <button class="secondary danger" type="button" onclick="resetApp()">
+      Apagar todos os dados desta aplicação
+    </button>
+  </div>
+
+  <div class="card">
+    <h3>💚 Ajudar o EQUILIBRA</h3>
+    <p class="muted">
+      Se esta ferramenta tem sido útil para ti e quiseres contribuir
+      voluntariamente para o seu desenvolvimento, podes fazê-lo através
+      do IBAN abaixo.
+    </p>
+
+    <label>IBAN para contribuições</label>
+    <input id="supportIban" type="text"
+      value="000600003170120230193" readonly>
+
+    <button class="primary" type="button" onclick="copySupportIban()">
+      📋 Copiar IBAN
+    </button>
+
+    <p class="muted">
+      O apoio é voluntário. Não precisas de pagar para utilizar
+      a versão gratuita do EQUILIBRA.
+    </p>
+    <p id="copyMessage" class="small"></p>
+  </div>
+</section>
+
+</main>
+
+<div class="motivation" id="motivationMessage">
+  Vais realizar os teus sonhos! Com disciplina e pequenas decisões
+  conscientes, cada passo conta. 💚
+</div>
+
+<script>
+
+const STORAGE_KEY = "equilibra_v4";
+
+let data = {
+  profile: {
+    name: "",
+    currency: "Kz",
+    openingBalance: 0,
+    incomeSource: "",
+    frequency: "monthly"
+  },
+  movements: [],
+  goals: [],
+  salaryMessage: ""
+};
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === "object") {
+        data = {
+          ...data,
+          ...parsed,
+          profile: { ...data.profile, ...(parsed.profile || {}) },
+          movements: Array.isArray(parsed.movements) ? parsed.movements : [],
+          goals: Array.isArray(parsed.goals) ? parsed.goals : []
+        };
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao carregar dados:", error);
+  }
+}
+
+function saveData() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    alert("Não foi possível guardar os dados neste dispositivo.");
+  }
+}
+
+function money(value) {
+  const amount = Number(value) || 0;
+  return amount.toLocaleString("pt-PT", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }) + " " + (data.profile.currency || "Kz");
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
+}
+
+function showSection(id, button) {
+  document.querySelectorAll(".section").forEach(section => {
+    section.classList.toggle("active", section.id === id);
+  });
+
+  document.querySelectorAll(".nav-btn").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  if (button) {
+    button.classList.add("active");
+  } else {
+    const navButton = document.querySelector(
+      '.nav-btn[onclick*="' + id + '"]'
+    );
+    if (navButton) navButton.classList.add("active");
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function updateMotivation() {
+  const name = data.profile.name.trim();
+  const greeting = name ? name + ", " : "";
+
+  const motivation = document.getElementById("motivationMessage");
+  const welcome = document.getElementById("welcomeMessage");
+
+  if (motivation) {
+    motivation.textContent =
+      greeting +
+      "vais realizar os teus sonhos! Para isso, é preciso ter disciplina, evitar gastos desnecessários e acreditar que cada pequena decisão consciente te aproxima dos teus objetivos. 💚";
+  }
+
+  if (welcome) {
+    welcome.textContent = name
+      ? "Bem-vindo(a), " + name + "! Vamos cuidar do teu dinheiro."
+      : "Vamos cuidar melhor do teu dinheiro.";
+  }
+}
+
+function updateProfileDisplay() {
+  const fields = {
+    userName: data.profile.name,
+    currency: data.profile.currency,
+    openingBalance: data.profile.openingBalance,
+    incomeSource: data.profile.incomeSource,
+    frequency: data.profile.frequency
+  };
+
+  Object.entries(fields).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element && value !== undefined && value !== null) {
+      element.value = value;
+    }
+  });
+
+  updateMotivation();
+}
+
+function getPaidAmount(movement) {
+  if (movement.status === "confirmed") {
+    return Number(movement.amount) || 0;
+  }
+
+  if (movement.status === "partial") {
+    return Number(movement.paidAmount) || 0;
+  }
+
+  return 0;
+}
+
+function getPendingAmount(movement) {
+  const amount = Number(movement.amount) || 0;
+
+  if (movement.status === "planned") return amount;
+
+  if (movement.status === "partial") {
+    return Math.max(0, amount - (Number(movement.paidAmount) || 0));
+  }
+
+  return 0;
+}
+
+function calculateFinance() {
+  const opening = Number(data.profile.openingBalance) || 0;
+
+  let income = 0;
+  let expenses = 0;
+  let pending = 0;
+
+  data.movements.forEach(movement => {
+    const paid = getPaidAmount(movement);
+    const remaining = getPendingAmount(movement);
+
+    if (movement.type === "income") {
+      income += paid;
+    } else {
+      expenses += paid;
+      pending += remaining;
+    }
+  });
+
+  const reserved = data.goals.reduce((total, goal) => {
+    return total + (Number(goal.saved) || 0);
+  }, 0);
+
+  const balance = opening + income - expenses;
+  const available = balance - pending - reserved;
+
+  return {
+    income,
+    expenses,
+    pending,
+    reserved,
+    balance,
+    available
+  };
+}
+
+function updateDashboard() {
+  const totals = calculateFinance();
+
+  const values = {
+    currentBalance: totals.balance,
+    availableBalance: totals.available,
+    incomeTotal: totals.income,
+    expenseTotal: totals.expenses,
+    pendingTotal: totals.pending,
+    reservedTotal: totals.reserved
+  };
+
+  Object.entries(values).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = money(value);
+  });
+
+  renderHistory();
+  renderUpcoming();
+  renderGoals();
+}
+
+function renderHistory() {
+  const container = document.getElementById("historyList");
+  if (!container) return;
+
+  if (data.movements.length === 0) {
+    container.innerHTML = "<p>Ainda não existem movimentos registados.</p>";
+    return;
+  }
+
+  const ordered = [...data.movements].reverse();
+
+  container.innerHTML = ordered.map(item => {
+    const isIncome = item.type === "income";
+    const paid = getPaidAmount(item);
+    const pending = getPendingAmount(item);
+
+    let status = "Previsto";
+    if (item.status === "confirmed") status = "Realizado";
+    if (item.status === "partial") status = "Parcial";
+
+    return `
+      <div class="list-item">
+        <strong>${escapeHTML(item.description)}</strong>
+        <span>${isIncome ? "Entrada" : "Saída"} • ${escapeHTML(item.date)}</span>
+        <p>${money(item.amount)} • ${status}</p>
+        ${item.status === "partial"
+          ? `<small>Já movimentado: ${money(paid)} | Pendente: ${money(pending)}</small>`
+          : ""}
+      </div>
+    `;
+  }).join("");
+}
+
+function renderUpcoming() {
+  const container = document.getElementById("upcomingList");
+  if (!container) return;
+
+  const pendingItems = data.movements.filter(item => {
+    return getPendingAmount(item) > 0;
+  });
+
+  if (pendingItems.length === 0) {
+    container.innerHTML = "<p>Não tens compromissos pendentes registados.</p>";
+    return;
+  }
+
+  container.innerHTML = pendingItems.map(item => `
+    <div class="list-item">
+      <strong>${escapeHTML(item.description)}</strong>
+      <span>${item.type === "income" ? "Entrada prevista" : "Compromisso pendente"}</span>
+      <p>${money(getPendingAmount(item))}</p>
+      <small>Data: ${escapeHTML(item.date)}</small>
+    </div>
+  `).join("");
+}
+
+function renderGoals() {
+  const container = document.getElementById("goalsList");
+  if (!container) return;
+
+  if (data.goals.length === 0) {
+    container.innerHTML = "<p>Ainda não definiste objetivos.</p>";
+    return;
+  }
+
+  container.innerHTML = data.goals.map(goal => {
+    const target = Number(goal.target) || 0;
+    const saved = Number(goal.saved) || 0;
+    const percent = target > 0
+      ? Math.min(100, (saved / target) * 100)
+      : 0;
+
+    return `
+      <div class="list-item">
+        <strong>${escapeHTML(goal.name)}</strong>
+        <p>Objetivo: ${money(target)}</p>
+        <p>Reservado: ${money(saved)}</p>
+        <p>Prazo: ${escapeHTML(goal.deadline)}</p>
+        <p>Prioridade: ${escapeHTML(goal.priority)}</p>
+        <div class="progress">
+          <div class="progress-bar" style="width:${percent}%"></div>
+        </div>
+        <small>${percent.toFixed(1)}% alcançado</small>
+      </div>
+    `;
+  }).join("");
+}
+
+function updatePartialArea() {
+  const status = document.getElementById("movementStatus");
+  const area = document.getElementById("partialArea");
+
+  if (status && area) {
+    area.style.display = status.value === "partial" ? "block" : "none";
+  }
+}
+
+function handleProfile(event) {
+  event.preventDefault();
+
+  data.profile.name = document.getElementById("userName").value.trim();
+  data.profile.currency = document.getElementById("currency").value;
+  data.profile.openingBalance =
+    Number(document.getElementById("openingBalance").value) || 0;
+  data.profile.incomeSource =
+    document.getElementById("incomeSource").value.trim();
+  data.profile.frequency =
+    document.getElementById("frequency").value;
+
+  saveData();
+  updateProfileDisplay();
+  updateDashboard();
+
+  alert("Perfil guardado com sucesso! 💚");
+}
+
+function handleMovement(event) {
+  event.preventDefault();
+
+  const type = document.getElementById("movementType").value;
+  const description = document.getElementById("movementDescription").value.trim();
+  const amount = Number(document.getElementById("movementAmount").value);
+  const status = document.getElementById("movementStatus").value;
+  const date = document.getElementById("movementDate").value ||
+    new Date().toISOString().slice(0, 10);
+
+  const paidAmount = status === "partial"
+    ? Number(document.getElementById("partialAmount").value) || 0
+    : 0;
+
+  if (!description || !Number.isFinite(amount) || amount <= 0) {
+    alert("Preenche uma descrição e um valor válido.");
+    return;
+  }
+
+  if (status === "partial" && (paidAmount <= 0 || paidAmount >= amount)) {
+    alert("O valor parcial deve ser maior que zero e menor que o valor total.");
+    return;
+  }
+
+  const movement = {
+    id: Date.now(),
+    type,
+    description,
+    amount,
+    status,
+    paidAmount,
+    date
+  };
+
+  data.movements.push(movement);
+
+  const isSalary = type === "income" &&
+    /sal[aá]rio|ordenado/i.test(description);
+
+  if (isSalary && (status === "confirmed" || status === "partial")) {
+    const name = data.profile.name.trim();
+    const greeting = name ? name + ", " : "";
+
+    data.salaryMessage = status === "partial"
+      ? greeting + "uma parte do teu salário caiu! Vamos gerir este dinheiro com responsabilidade e disciplina para conquistarmos os teus objetivos. Tu mereces uma vida abençoada! 💚"
+      : greeting + "o teu dinheiro caiu! Vamos gastá-lo com responsabilidade e disciplina para conquistarmos os teus objetivos. Tu mereces uma vida abençoada! 💚";
+
+    const message = document.getElementById("salaryMessage");
+    if (message) message.textContent = data.salaryMessage;
+  }
+
+  saveData();
+  updateDashboard();
+
+  event.target.reset();
+  updatePartialArea();
+
+  alert("Movimento registado com sucesso!");
+}
+
+function handleGoal(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("goalName").value.trim();
+  const target = Number(document.getElementById("goalTarget").value);
+  const saved = Number(document.getElementById("goalSaved").value) || 0;
+  const deadline = document.getElementById("goalDeadline").value;
+  const priority = document.getElementById("goalPriority").value;
+
+  if (!name || target <= 0 || saved < 0 || saved > target) {
+    alert("Verifica o nome, o valor do objetivo e o valor reservado.");
+    return;
+  }
+
+  data.goals.push({
+    id: Date.now(),
+    name,
+    target,
+    saved,
+    deadline,
+    priority
+  });
+
+  saveData();
+  updateDashboard();
+  event.target.reset();
+
+  alert("Objetivo guardado com sucesso! 💚");
+}
+
+function evaluateExpense(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("purchaseName").value.trim();
+  const amount = Number(document.getElementById("purchaseAmount").value);
+  const nature = document.getElementById("purchaseNature").value;
+  const urgency = document.getElementById("purchaseUrgency").value;
+  const needsCovered = document.getElementById("needsCovered").value;
+  const context = document.getElementById("purchaseContext").value.trim();
+
+  const totals = calculateFinance();
+  const result = document.getElementById("evaluationResult");
+
+  if (!name || amount <= 0) {
+    result.innerHTML = "<p>Indica a despesa e um valor válido.</p>";
+    return;
+  }
+
+  const enoughMoney = totals.available >= amount;
+  const deficit = amount - totals.available;
+
+  let color = "yellow";
+  let title = "Pondera antes de gastar";
+  let explanation = "";
+
+  if (nature === "strategic") {
+    if (enoughMoney) {
+      color = "blue";
+      title = "Despesa estratégica";
+      explanation = "Pode contribuir para um objetivo ou melhorar a tua situação. Confirma se o benefício justifica o custo e se os compromissos continuam protegidos.";
+    } else {
+      color = "yellow";
+      title = "Estratégica, mas exige cautela";
+      explanation = "A intenção pode ser positiva, mas a disponibilidade atual não cobre esta despesa sem pressionar o teu orçamento.";
+    }
+  } else if (nature === "emergency") {
+    color = "green";
+    title = "Necessidade urgente";
+    explanation = "Uma emergência merece atenção. Procura a solução adequada e verifica como reorganizar os restantes compromissos.";
+  } else if (!enoughMoney) {
+    color = "red";
+    title = "Despesa desaconselhada neste momento";
+    explanation = "A disponibilidade calculada não cobre esta compra. Faltariam " + money(deficit) + ". Considera adiar, reduzir o valor ou rever o orçamento.";
+  } else if (nature === "need") {
+    color = "green";
+    title = "Despesa justificável";
+    explanation = "Parece corresponder a uma necessidade e existe disponibilidade calculada para a cobrir. Confirma se os compromissos futuros continuam assegurados.";
+  } else if (needsCovered === "no" && urgency === "low") {
+    color = "yellow";
+    title = "É melhor ponderar";
+    explanation = "Ainda existem necessidades por cobrir e esta compra não parece urgente. Talvez seja melhor priorizar o essencial.";
+  } else if (nature === "want" && urgency === "low") {
+    color = "yellow";
+    title = "Podes esperar";
+    explanation = "Não parece urgente. Esperar pode ajudar-te a decidir com mais clareza e proteger os teus objetivos.";
+  } else {
+    color = "green";
+    title = "Compra financeiramente possível";
+    explanation = "A disponibilidade calculada cobre o valor. Ainda assim, avalia se esta compra faz sentido para as tuas prioridades.";
+  }
+
+  const contextText = context
+    ? "<p><strong>O teu contexto:</strong> " + escapeHTML(context) + "</p>"
+    : "";
+
+  result.innerHTML = `
+    <div class="evaluation-card ${color}">
+      <h3>${title}</h3>
+      <p><strong>Despesa:</strong> ${escapeHTML(name)}</p>
+      <p><strong>Valor:</strong> ${money(amount)}</p>
+      <p>${explanation}</p>
+      ${contextText}
+      <p><strong>Disponibilidade atual:</strong> ${money(totals.available)}</p>
+      <p>A decisão final é tua. O EQUILIBRA ajuda-te a avaliar, não a controlar a tua vida.</p>
+    </div>
+  `;
+}
+
+async function copySupportIban() {
+  const input = document.getElementById("supportIban");
+  const message = document.getElementById("copyMessage");
+
+  if (!input) return;
+
+  const iban = input.value;
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(iban);
+    } else {
+      input.focus();
+      input.select();
+      input.setSelectionRange(0, iban.length);
+
+      const copied = document.execCommand("copy");
+      if (!copied) throw new Error("Cópia não confirmada");
+    }
+
+    if (message) {
+      message.textContent = "IBAN copiado! Obrigado pelo apoio. 💚";
+    }
+  } catch (error) {
+    if (message) {
+      message.textContent = "Não foi possível copiar automaticamente. Seleciona o IBAN e copia manualmente.";
+    }
+  }
+}
+
+function resetApp() {
+  const confirmed = confirm(
+    "Tens a certeza de que queres apagar todos os dados desta aplicação? Esta ação não pode ser desfeita."
+  );
+
+  if (!confirmed) return;
+
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    alert("Não foi possível apagar os dados.");
+    return;
+  }
+
+  location.reload();
+}
+
+function startApp() {
+  loadData();
+  updateProfileDisplay();
+
+  const profileForm = document.getElementById("profileForm");
+  const movementForm = document.getElementById("setupForm");
+  const goalForm = document.getElementById("goalForm");
+  const evaluationForm = document.getElementById("evaluationForm");
+  const movementStatus = document.getElementById("movementStatus");
+
+  if (profileForm) {
+    profileForm.addEventListener("submit", handleProfile);
+  }
+
+  if (movementForm) {
+    movementForm.addEventListener("submit", handleMovement);
+  }
+
+  if (goalForm) {
+    goalForm.addEventListener("submit", handleGoal);
+  }
+
+  if (evaluationForm) {
+    evaluationForm.addEventListener("submit", evaluateExpense);
+  }
+
+  if (movementStatus) {
+    movementStatus.addEventListener("change", updatePartialArea);
+  }
+
+  const salaryMessage = document.getElementById("salaryMessage");
+  if (salaryMessage && data.salaryMessage) {
+    salaryMessage.textContent = data.salaryMessage;
+  }
+
+  const dateInput = document.getElementById("movementDate");
+  if (dateInput && !dateInput.value) {
+    dateInput.value = new Date().toISOString().slice(0, 10);
+  }
+
+  updatePartialArea();
+  updateDashboard();
+}
+
+document.addEventListener("DOMContentLoaded", startApp);
+</script>
+</body>
+</html>
